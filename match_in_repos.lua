@@ -110,10 +110,10 @@ end
 function _get_repo_files()
     local paths = {}
 
-    repo_root = _call('hg root 2> NUL || git rev-parse --show-toplevel')
+    repo_root = _call('hg root 2> NUL || git rev-parse --show-toplevel 2> NUL')
     repo_root = repo_root:gsub('/', PATH_SEP)
 
-    get_files_cmd = 'hg manifest 2> NUL || git ls-files 2> NUL'
+    get_files_cmd = 'hg manifest 2> NUL || git ls-files --full-name 2> NUL'
     for line in io.popen(get_files_cmd):lines() do
         full_path = repo_root..PATH_SEP..(line:gsub('/', PATH_SEP))
         table.insert(paths, full_path)
