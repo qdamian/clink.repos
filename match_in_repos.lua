@@ -93,7 +93,7 @@ local cache = {
 }
 
 function _get_hg_or_git_paths(current_dir)
-    local id = _call('hg id --id 2> NUL || git rev-parse HEAD 2> NUL')
+    local id = _call('git rev-parse HEAD 2> NUL || hg id --id 2> NUL')
     if id == '' then -- not in a repo
         return {}, {}
     end
@@ -110,10 +110,10 @@ end
 function _get_repo_files()
     local paths = {}
 
-    repo_root = _call('hg root 2> NUL || git rev-parse --show-toplevel 2> NUL')
+    repo_root = _call('git rev-parse --show-toplevel 2> NUL || hg root 2> NUL')
     repo_root = repo_root:gsub('/', PATH_SEP)
 
-    get_files_cmd = 'hg manifest 2> NUL || git ls-files --full-name 2> NUL'
+    get_files_cmd = 'git ls-files --full-name 2> NUL || hg manifest 2> NUL'
     for line in io.popen(get_files_cmd):lines() do
         full_path = repo_root..PATH_SEP..(line:gsub('/', PATH_SEP))
         table.insert(paths, full_path)
